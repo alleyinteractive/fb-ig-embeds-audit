@@ -170,6 +170,13 @@ class Command extends \WP_CLI_Command {
 	protected function get_embeds( $post_content ) {
 		$post_content = wp_strip_all_tags( $post_content );
 
+		$pattern      = get_shortcode_regex();
+		$post_content = preg_replace(
+			"/$pattern/",
+			'${5}',
+			$post_content
+		);
+
 		$patterns = [
 			// Facebook.
 			'#https?://www\.facebook\.com/.*/posts/.*#i',
