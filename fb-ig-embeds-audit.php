@@ -1,24 +1,12 @@
 <?php
-/*
-	Plugin Name: Facebook and Instagram Embeds Audit
-	Description: A series of WP-CLI tools to help you find Facebook and Instagram embeds in your content.
-	Version: 0.1
-	Author URI: http://www.alleyinteractive.com/
-*/
-/*  This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
+/**
+ * Plugin Name: Facebook and Instagram Embeds Audit
+ * Description: A series of WP-CLI tools to help you find Facebook and Instagram embeds in your content.
+ * Version: 0.1
+ * Author URI: http://www.alleyinteractive.com/
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
+ * @package FB_IG_Embeds_Audit
+ */
 
 namespace FB_IG_Embeds_Audit;
 
@@ -28,7 +16,9 @@ if ( ! class_exists( '\WP_CLI' ) ) {
 
 require_once __DIR__ . '/trait-alley-cli-bulk-task.php';
 
-
+/**
+ * Class Command.
+ */
 class Command extends \WP_CLI_Command {
 	use CLI_Bulk_Task;
 
@@ -57,11 +47,17 @@ class Command extends \WP_CLI_Command {
 	 *     wp fb-ig-embeds-audit list
 	 *     wp fb-ig-embeds-audit list --post_id=123
 	 *     wp fb-ig-embeds-audit list --format=json
+	 *
+	 * @param array $args The command args.
+	 * @param array $assoc_args The command associated  args.
 	 */
 	public function list( $args, $assoc_args ) {
-		$assoc_args = wp_parse_args( $assoc_args, [
-			'format' => 'table',
-		] );
+		$assoc_args = wp_parse_args(
+			$assoc_args,
+			[
+				'format' => 'table',
+			]
+		);
 
 		// Search all posts.
 		if ( empty( $assoc_args['post_id'] ) ) {
@@ -93,25 +89,27 @@ class Command extends \WP_CLI_Command {
 		$admin_url = admin_url( 'post.php?post=%d&action=edit' );
 
 		\WP_CLI::line( 'Analyzing content...' );
-		$this->bulk_task( function( $post ) use ( &$data, $admin_url ) {
-			$embeds = $this->get_embeds( $post->post_content );
+		$this->bulk_task(
+			function( $post ) use ( &$data, $admin_url ) {
+				$embeds = $this->get_embeds( $post->post_content );
 
-			// Skip if this post has no embeds.
-			if ( empty( $embeds ) ) {
-				return;
+				// Skip if this post has no embeds.
+				if ( empty( $embeds ) ) {
+					return;
+				}
+
+				$data_row = [
+					'ID'       => $post->ID,
+					'URL'      => get_permalink( $post ),
+					'Edit URL' => sprintf( $admin_url, $post->ID ),
+				];
+
+				foreach ( $embeds as $snippet ) {
+					$data_row['Snippet'] = $snippet;
+					$data[] = $data_row;
+				}
 			}
-
-			$data_row = [
-				'ID'       => $post->ID,
-				'URL'      => get_permalink( $post ),
-				'Edit URL' => sprintf( $admin_url, $post->ID ),
-			];
-
-			foreach ( $embeds as $snippet ) {
-				$data_row['Snippet'] = $snippet;
-				$data[] = $data_row;
-			}
-		} );
+		);
 
 		return $data;
 	}
@@ -119,6 +117,7 @@ class Command extends \WP_CLI_Command {
 	/**
 	 * Get all posts with references to Facebook or Instagram oEmbeds.
 	 *
+	 * @param int $post_id The post ID.
 	 * @return array {
 	 *     Search results data.
 	 *
@@ -198,10 +197,8 @@ class Command extends \WP_CLI_Command {
 				continue;
 			}
 
-			foreach ( $matches as $match ) {
-				foreach ( $match as $single_embed ) {
-					$embeds[] = $single_embed;
-				}
+			foreach ( $matches[0] as $match ) {
+				$embeds[] = $match;
 			}
 		}
 
