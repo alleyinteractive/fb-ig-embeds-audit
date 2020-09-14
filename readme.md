@@ -9,7 +9,7 @@ Facebook is dropping support for unauthenticated Facebook and Instagram oEmbeds 
 > oEmbed is a format for allowing an embedded representation of a URL on third party sites. The simple API allows a website to display embedded content (such as photos or videos) when a user posts a link to that resource, without having to parse the resource directly.
 > - oembed.com
 
-This means that beginning October 24th, the Facebook and Instagram embeds on all WordPress sites will not display a link to the content, rather than a rendered embed/widget.
+This means that beginning October 24th, the Facebook and Instagram embeds on all WordPress sites will display a link to the content, rather than a rendered embed/widget.
 
 **More WordPress Community Info:**
 * [WordPress Trac ticket](https://core.trac.wordpress.org/ticket/50861).
