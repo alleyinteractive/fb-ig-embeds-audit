@@ -7,6 +7,7 @@
 
 namespace FB_IG_Embeds_Audit;
 
+use \WP_CLI;
 use \WP_Query;
 
 /**
@@ -38,7 +39,6 @@ use \WP_Query;
  *
  * @author Matthew Boynes, Alley Interactive
  * @license GPLv2
- * @codingStandardsIgnoreFile
  */
 trait CLI_Bulk_Task {
 
@@ -56,7 +56,7 @@ trait CLI_Bulk_Task {
 	 * queries that might run during a bulk task.
 	 *
 	 * @param  string   $where The current $where clause.
-	 * @param  WP_Query &$query WP_Query object.
+	 * @param  WP_Query $query WP_Query object via reference.
 	 * @return string WHERE clause with our pagination added.
 	 */
 	public function bulk_task_posts_where( $where, $query ) {
@@ -70,7 +70,7 @@ trait CLI_Bulk_Task {
 	 * Loop through any number of posts efficiently with a callback, and output
 	 * the progress.
 	 *
-	 * @param array $args {
+	 * @param array    $args {
 	 *     Optional. WP_Query args. Some have overridden defaults, and some are
 	 *     fixed. Anything not mentioned below will operate as normal.
 	 *
@@ -90,7 +90,7 @@ trait CLI_Bulk_Task {
 		// $args is optional, so if it's callable, assume it replaces $callable.
 		if ( is_callable( $args ) ) {
 			$callable = $args;
-			$args = array();
+			$args     = [];
 		}
 
 		// Ensure that we have a callable.
@@ -98,11 +98,14 @@ trait CLI_Bulk_Task {
 			WP_CLI::error( 'You must pass a callable to `bulk_task()`' );
 		}
 
-		$args = wp_parse_args( $args, array(
-			'post_type'      => 'any',
-			'post_status'    => 'any',
-			'posts_per_page' => 100,
-		) );
+		$args = wp_parse_args(
+			$args,
+			[
+				'post_type'      => 'any',
+				'post_status'    => 'any',
+				'posts_per_page' => 100,
+			]
+		);
 
 		// Force some arguments and don't let them get overridden.
 		$args['suppress_filters']    = false;
@@ -113,10 +116,10 @@ trait CLI_Bulk_Task {
 
 		// Ensure $bulk_task_min_id always starts at 0.
 		$this->bulk_task_min_id = 0;
-		$current_page = 0;
+		$current_page           = 0;
 
 		// Handle pagination.
-		add_filter( 'posts_where', array( $this, 'bulk_task_posts_where' ), 9999, 2 );
+		add_filter( 'posts_where', [ $this, 'bulk_task_posts_where' ], 9999, 2 );
 
 		// Output the empty status.
 		$this->do_bulk_status();
@@ -131,29 +134,29 @@ trait CLI_Bulk_Task {
 			// query in `bulk_taks_posts_where()`.
 			$this->bulk_task_object_hash = spl_object_hash( $query );
 
-			// Run the query
+			// Run the query.
 			$query->query( $args );
 
-			// Invoke the callable over every post
+			// Invoke the callable over every post.
 			array_walk( $query->posts, $callable );
 
-			// Update our min ID for the next query
-			$post_ids = wp_list_pluck( $query->posts, 'ID' );
+			// Update our min ID for the next query.
+			$post_ids               = wp_list_pluck( $query->posts, 'ID' );
 			$this->bulk_task_min_id = ! empty( $post_ids ) ? max( $post_ids ) : null;
 
-			// Contain memory leaks
+			// Contain memory leaks.
 			if ( method_exists( $this, 'stop_the_insanity' ) ) {
 				$this->stop_the_insanity();
 			}
 
-			// Update the status
+			// Update the status.
 			$this->do_bulk_status( ++$current_page, $query->max_num_pages + $current_page - 1 );
 		} while ( $query->found_posts && $query->max_num_pages > 1 );
 		echo "\n";
 
 		$this->bulk_task_min_id = null;
 
-		remove_filter( 'posts_where', array( $this, 'bulk_task_posts_where' ), 9999 );
+		remove_filter( 'posts_where', [ $this, 'bulk_task_posts_where' ], 9999 );
 	}
 
 	/**
@@ -175,12 +178,15 @@ trait CLI_Bulk_Task {
 			return;
 		}
 		$seconds_per_page = ( microtime( true ) - $start ) / $page;
-		printf(
-			'%s%' . ( strlen( $max ) + 2 ) . "d/%d complete; %s remaining\r",
-			$this->progress_bar( $page / $max ),
-			$page,
-			$max,
-			date( 'H:i:s', ( $max - $page ) * $seconds_per_page )
+
+		WP_CLI::line(
+			sprintf(
+				'%s%' . ( strlen( $max ) + 2 ) . "d/%d complete; %s remaining\r",
+				$this->progress_bar( $page / $max ),
+				$page,
+				$max,
+				date( 'H:i:s', ( $max - $page ) * $seconds_per_page ) // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+			)
 		);
 	}
 
@@ -197,25 +203,26 @@ trait CLI_Bulk_Task {
 		return sprintf( '  [%-50s]  ', str_repeat( '#', floor( $percent * 50 ) ) );
 	}
 
-	/*
+	/**
 	 * Clear all of the caches for memory management.
 	 */
 	protected function stop_the_insanity() {
 		global $wpdb, $wp_object_cache;
 
-		$wpdb->queries = []; // or define( 'WP_IMPORTING', true );
+		// phpcs:ignore Squiz.PHP.CommentedOutCode.Found
+		$wpdb->queries = []; // Or use `define( 'WP_IMPORTING', true );`.
 
 		if ( ! is_object( $wp_object_cache ) ) {
 			return;
 		}
 
-		$wp_object_cache->group_ops = [];
-		$wp_object_cache->stats = [];
+		$wp_object_cache->group_ops      = [];
+		$wp_object_cache->stats          = [];
 		$wp_object_cache->memcache_debug = [];
-		$wp_object_cache->cache = [];
+		$wp_object_cache->cache          = [];
 
 		if ( is_callable( $wp_object_cache, '__remoteset' ) ) {
-			$wp_object_cache->__remoteset(); // important
+			$wp_object_cache->__remoteset(); // Important.
 		}
 	}
 }
