@@ -38,3 +38,9 @@ Run the command from any WP CLI command line,
 **Modify the output format**
 
 `$ wp fb-ig-embeds-audit list --format=json`
+
+## Changelog ##
+
+### 1.0.0 ###
+
+* Initial public release.
