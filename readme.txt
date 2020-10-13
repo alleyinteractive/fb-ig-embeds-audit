@@ -1,12 +1,12 @@
-# Facebook/Instagram Embeds Audit Plugin #
-**Contributors:** [alleyinteractive](https://profiles.wordpress.org/alleyinteractive/)  
-**Tags:** oembed, facebook, instagram, cli  
-**License:** GPLv2 or later  
-**License URI:** https://www.gnu.org/licenses/gpl-2.0.html  
+=== Facebook/Instagram Embeds Audit Plugin ===
+Contributors: alleyinteractive
+Tags: oembed, facebook, instagram, cli
+License: GPLv2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 CLI commands to audit Facebook and Instagram oembeds in post content.
 
-## Description ##
+== Description ==
 
 Facebook is dropping support for unauthenticated Facebook and Instagram oEmbeds on October 24th.
 
@@ -19,12 +19,12 @@ This means that beginning October 24th, the Facebook and Instagram embeds on all
 * [WordPress Trac ticket](https://core.trac.wordpress.org/ticket/50861).
 * [Gutenberg Ticket](https://github.com/WordPress/gutenberg/issues/24389).
 
-## Installation ##
+== Installation ==
 
 1. Upload `/fb-ig-embeds-audit/` folder to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
-## Usage ##
+== Usage ==
 Run the command from any WP CLI command line,
 
 **Run the audit on all content**
