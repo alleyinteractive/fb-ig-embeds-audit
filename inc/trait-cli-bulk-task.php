@@ -84,7 +84,7 @@ trait CLI_Bulk_Task {
 	 *     @type string $order Always 'ASC'.
 	 * }
 	 * @param callable $callable Required. Callback function to invoke for each
-	 *                            post. The callable will be passed a WP_Post object.
+	 *                           post. The callable will be passed a WP_Post object.
 	 */
 	protected function bulk_task( $args, $callable = null ) {
 		// $args is optional, so if it's callable, assume it replaces $callable.
