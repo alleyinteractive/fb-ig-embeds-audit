@@ -34,4 +34,8 @@
     <exclude name="WordPressVIPMinimum.Classes.RestrictedExtendClasses.wp_cli" />
   </rule>
 
+  <rule ref="WordPress.Security.EscapeOutput.OutputNotEscaped">
+    <exclude-pattern>/inc/trait-cli-bulk-task\.php</exclude-pattern>
+  </rule>
+
 </ruleset>
