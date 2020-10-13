@@ -18,7 +18,7 @@ class CLI extends \WP_CLI_Command {
 	use CLI_Bulk_Task;
 
 	/**
-	 * Get all http references in post_content.
+	 * Get all HTTP references in post_content.
 	 *
 	 * ## OPTIONS
 	 *
@@ -43,8 +43,8 @@ class CLI extends \WP_CLI_Command {
 	 *     wp fb-ig-embeds-audit list --post_id=123
 	 *     wp fb-ig-embeds-audit list --format=json
 	 *
-	 * @param array $args The command args.
-	 * @param array $assoc_args The command associated  args.
+	 * @param array $args       The command args.
+	 * @param array $assoc_args The command associated args.
 	 */
 	public function list( $args, $assoc_args ) {
 		$assoc_args = wp_parse_args(
@@ -73,10 +73,10 @@ class CLI extends \WP_CLI_Command {
 	 * @return array {
 	 *     Search results data.
 	 *
-	 *     @type int $ID The post ID.
-	 *     @type string $URL The URL to view the post.
+	 *     @type int    $ID         The post ID.
+	 *     @type string $URL        The URL to view the post.
 	 *     @type string ${Edit URL} The URL to edit the post.
-	 *     @type string $Snippet The matching content, in context.
+	 *     @type string $Snippet    The matching content, in context.
 	 * }
 	 */
 	protected function get_all_embeds() {
@@ -116,10 +116,10 @@ class CLI extends \WP_CLI_Command {
 	 * @return array {
 	 *     Search results data.
 	 *
-	 *     @type int $ID The post ID.
-	 *     @type string $URL The URL to view the post.
+	 *     @type int    $ID         The post ID.
+	 *     @type string $URL        The URL to view the post.
 	 *     @type string ${Edit URL} The URL to edit the post.
-	 *     @type string $Snippet The matching content, in context.
+	 *     @type string $Snippet    The matching content, in context.
 	 * }
 	 */
 	protected function get_embeds_from_post( $post_id ) {
@@ -159,7 +159,7 @@ class CLI extends \WP_CLI_Command {
 	/**
 	 * Gets all FB|IG embeds given an HTML string.
 	 *
-	 * @param  string $post_content The post content to check.
+	 * @param string $post_content The post content to check.
 	 * @return array Array of embeds.
 	 */
 	protected function get_embeds( $post_content ) {
