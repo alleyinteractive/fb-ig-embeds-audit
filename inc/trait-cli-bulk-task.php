@@ -7,6 +7,7 @@
 
 namespace FB_IG_Embeds_Audit;
 
+use \WP_CLI;
 use \WP_Query;
 
 /**
@@ -177,13 +178,18 @@ trait CLI_Bulk_Task {
 			return;
 		}
 		$seconds_per_page = ( microtime( true ) - $start ) / $page;
-		printf(
-			'%s%' . ( strlen( $max ) + 2 ) . "d/%d complete; %s remaining\r",
-			$this->progress_bar( $page / $max ),
-			$page,
-			$max,
-			date( 'H:i:s', ( $max - $page ) * $seconds_per_page ) // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+
+		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
+		WP_CLI::line(
+			printf(
+				'%s%' . ( strlen( $max ) + 2 ) . "d/%d complete; %s remaining\r",
+				$this->progress_bar( $page / $max ),
+				$page,
+				$max,
+				date( 'H:i:s', ( $max - $page ) * $seconds_per_page ) // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
+			)
 		);
+		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
