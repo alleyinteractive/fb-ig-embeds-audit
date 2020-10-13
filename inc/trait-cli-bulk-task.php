@@ -55,7 +55,7 @@ trait CLI_Bulk_Task {
 	 * This checks the object hash to ensure that we don't manipulate any other
 	 * queries that might run during a bulk task.
 	 *
-	 * @param  string $where The current $where clause.
+	 * @param  string   $where The current $where clause.
 	 * @param  WP_Query &$query WP_Query object.
 	 * @return string WHERE clause with our pagination added.
 	 */
@@ -70,22 +70,21 @@ trait CLI_Bulk_Task {
 	 * Loop through any number of posts efficiently with a callback, and output
 	 * the progress.
 	 *
-	 * @param  array $args {
+	 * @param array $args {
 	 *     Optional. WP_Query args. Some have overridden defaults, and some are
 	 *     fixed. Anything not mentioned below will operate as normal.
 	 *
 	 *     @type string $post_type Defaults to 'any'.
 	 *     @type string $post_status Defaults to 'any'.
-	 *     @type int $posts_per_page Defaults to 100.
-	 *     @type bool $suppress_filters Always false.
-	 *     @type bool $ignore_sticky_posts Always true.
-	 *     @type int $paged Always 1.
+	 *     @type int    $posts_per_page Defaults to 100.
+	 *     @type bool   $suppress_filters Always false.
+	 *     @type bool   $ignore_sticky_posts Always true.
+	 *     @type int    $paged Always 1.
 	 *     @type string $orderby Always 'ID'.
 	 *     @type string $order Always 'ASC'.
 	 * }
-	 * @param  callable $callable Required. Callback function to invoke for each
-	 *                            post. The callable will be passed a WP_Post
-	 *                            object.
+	 * @param callable $callable Required. Callback function to invoke for each
+	 *                           post. The callable will be passed a WP_Post object.
 	 */
 	protected function bulk_task( $args, $callable = null ) {
 		// $args is optional, so if it's callable, assume it replaces $callable.
@@ -157,16 +156,16 @@ trait CLI_Bulk_Task {
 		remove_filter( 'posts_where', array( $this, 'bulk_task_posts_where' ), 9999 );
 	}
 
-/**
-	* Output the status of a bulk task.
-	*
-	* This includes a progress bar, page/total pages, and a rough approximation
-	* of the time remaining based on the average number of seconds per page
-	* that the task has taken.
-	*
-	* @param  integer $page Current page number.
-	* @param  integer $max  Total number of pages to process.
-	*/
+	/**
+	 * Output the status of a bulk task.
+	 *
+	 * This includes a progress bar, page/total pages, and a rough approximation
+	 * of the time remaining based on the average number of seconds per page
+	 * that the task has taken.
+	 *
+	 * @param integer $page Current page number.
+	 * @param integer $max  Total number of pages to process.
+	 */
 	protected function do_bulk_status( $page = 0, $max = 0 ) {
 		static $start;
 		if ( ! $start || ! $page ) {
@@ -186,21 +185,21 @@ trait CLI_Bulk_Task {
 	}
 
 	/**
-	* Get a progress bar given a percent completion.
-	*
-	* This is a bit nicer than WP_CLI's progress bar and it fits nicely with
-	* the bulk task status.
-	*
-	* @param  float $percent Percent complete, from 0.00 - 1.00.
-	* @return string
-	*/
+	 * Get a progress bar given a percent completion.
+	 *
+	 * This is a bit nicer than WP_CLI's progress bar and it fits nicely with
+	 * the bulk task status.
+	 *
+	 * @param float $percent Percent complete, from 0.00 - 1.00.
+	 * @return string
+	 */
 	protected function progress_bar( $percent ) {
 		return sprintf( '  [%-50s]  ', str_repeat( '#', floor( $percent * 50 ) ) );
 	}
 
 	/*
-	* Clear all of the caches for memory management.
-	*/
+	 * Clear all of the caches for memory management.
+	 */
 	protected function stop_the_insanity() {
 		global $wpdb, $wp_object_cache;
 
