@@ -4,7 +4,7 @@
  * Description: A series of WP-CLI tools to help you find Facebook and Instagram embeds in your content.
  * Author:      Alley
  * Author URI:  https://alley.co
- * Version:     1.0.0
+ * Version:     1.0.1
  *
  * @package FB_IG_Embeds_Audit
  */
