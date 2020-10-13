@@ -42,7 +42,7 @@ Run the command from any WP CLI command line,
 ## Changelog ##
 
 ### 1.0.1 ###
-Fix PHPCS warnings and errors on the bulk task trait.
+* Fix PHPCS warnings and errors on the bulk task trait.
 
 ### 1.0.0 ###
 
