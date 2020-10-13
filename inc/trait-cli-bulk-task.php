@@ -179,9 +179,8 @@ trait CLI_Bulk_Task {
 		}
 		$seconds_per_page = ( microtime( true ) - $start ) / $page;
 
-		// phpcs:disable WordPress.Security.EscapeOutput.OutputNotEscaped
 		WP_CLI::line(
-			printf(
+			sprintf(
 				'%s%' . ( strlen( $max ) + 2 ) . "d/%d complete; %s remaining\r",
 				$this->progress_bar( $page / $max ),
 				$page,
@@ -189,7 +188,6 @@ trait CLI_Bulk_Task {
 				date( 'H:i:s', ( $max - $page ) * $seconds_per_page ) // phpcs:ignore WordPress.DateTime.RestrictedFunctions.date_date
 			)
 		);
-		// phpcs:enable WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
 
 	/**
